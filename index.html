@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Architecture Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1176/1176827.png">
+    <style>
+        :root {
+            --primary: #00c61e;
+            --primary-hover: #00c61e;
+            --bg-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --success-border: #22c55e;
+            --error-bg: #fee2e2;
+            --error-text: #991b1b;
+            --error-border: #ef4444;
+            --border-radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            width: 100%;
+            max-width: 650px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .hidden { display: none !important; }
+        
+        h1, h2 { 
+            margin-top: 0; 
+            font-weight: 700; 
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+
+        h3 {
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        p { color: var(--text-muted); }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s ease;
+            background-color: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            width: 100%;
+        }
+
+        button:hover:not(:disabled) { 
+            background-color: var(--primary-hover); 
+            transform: translateY(-1px);
+        }
+
+        .chapter-btn {
+            display: block;
+            text-align: left;
+            background-color: #f3f4f6;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            box-shadow: none;
+            border: 1px solid transparent;
+        }
+
+        .chapter-btn:hover:not(:disabled) {
+            background-color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .option-btn {
+            display: block;
+            text-align: left;
+            background-color: white;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            border: 2px solid #e5e7eb;
+            font-weight: 500;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f8fafc;
+        }
+
+        .btn-correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: var(--success-text) !important;
+        }
+
+        .btn-wrong {
+            background-color: var(--error-bg) !important;
+            border-color: var(--error-border) !important;
+            color: var(--error-text) !important;
+        }
+
+        .disabled-btn {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #e5e7eb;
+            border-radius: 999px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .ai-box {
+            background: #4b5563;
+            padding: 16px;
+            border-left: 4px solid var(--primary);
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95em;
+            color: #E5E7EF;
+            line-height: 1.5;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .btn-secondary { background-color: #4b5563; box-shadow: none; width: auto; }
+        .btn-secondary:hover:not(:disabled) { background-color: #374151; }
+        
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        /* --- Toggle Switch CSS --- */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="setup-section" style="text-align: center;">
+        <h1>Computer Architecture</h1>
+        <p style="margin-bottom: 30px;">Enter your name to begin the assessment.</p>
+        
+        <div class="input-group">
+            <label>Student Name</label>
+            <input type="text" id="student-name" placeholder="e.g. Brendan Eich">
+        </div>
+
+        <button onclick="startApp()">Access Modules</button>
+    </div>
+
+    <div id="chapters-section" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2>Module Selection</h2>
+        </div>
+        <p style="margin-top: 0;">Logged in as: <strong id="display-name" style="color: var(--primary);"></strong></p>
+
+        <div class="toggle-container">
+            <span class="toggle-label">Enable AI Tutor Features</span>
+            <label class="switch">
+                <input type="checkbox" id="ai-toggle" checked onchange="toggleAI()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div id="chapter-list" style="margin-top: 15px;">
+            </div>
+    </div>
+
+    <div id="quiz-section" class="hidden">
+        <div class="quiz-header">
+            <div>
+                <button onclick="backToChapters()" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; margin-bottom: 12px;">&larr; Back to Modules</button>
+                <h2 id="quiz-title" style="margin: 0; font-size: 1.25rem;">Chapter Quiz</h2>
+            </div>
+            <span style="font-weight: 600; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">
+                Question <span id="current-q-num">1</span> / <span id="total-q-num">X</span>
+            </span>
+        </div>
+        
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        
+        <h3 id="question-text"></h3>
+        <div id="options-container">
+            </div>
+        
+        <div id="ai-response" class="ai-box hidden"></div>
+
+        <div class="quiz-controls">
+            <button id="ai-hint-btn" onclick="getAIExplanation()" class="btn-secondary">Ask AI for a Hint</button>
+            <button id="next-btn" onclick="proceedToNext()" class="hidden" style="margin-left: auto;">Continue &rarr;</button>
+        </div>
+    </div>
+
+    <div id="results-section" class="hidden" style="text-align: center;">
+        <h2>Assessment Complete</h2>
+        
+        
+        <div class="score-display" id="final-score"></div>
+        <p style="font-weight: 500; font-size: 1.1rem; margin-bottom: 30px;">Score: <span id="raw-score"></span></p>
+        
+        <button onclick="backToChapters()" class="btn-secondary" style="width: 100%;">Return to Modules</button>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // --- DEVELOPER CONFIGURATION ---
+    // ==========================================
+    
+    // Change this to 'gemini' or 'groq' to switch the active AI provider
+    const ACTIVE_AI_PROVIDER = 'groq'; 
+
+    const API_KEYS = {
+        gemini: "",
+        groq: "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" 
+    };
+
+    const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxBSRv7Xw1BJRsQfphG1kdYS7qltkRMvS4lSC0oTkOkGRxE-1x-pUDtLe8wQ3I2zd45Kg/exec"; 
+
+    // Add your chapter names here
+    const chapterNames = {
+    1: "Introduction to Architecture, Von Neumann Model & Little Man Computer",
+    2: "History of Computers, CPU Architectures & Flynn's Taxonomy",
+    3: "Processor Organization & Register Organization",
+    4: "The Arithmetic and Logic Unit (ALU) & Control Systems",
+    5: "Machine Instructions, Addressing Modes & MIPS Architecture",
+    6: "Instruction Pipelining, Hazards & Performance"
+};
+
+    // --- Quiz Data Structure ---
+    const quizData = {
+        1: [
+            
+    { question: "What does Computer Architecture specify according to the restaurant analogy used in the lecture?", options: ["The layout and equipment", "The structure, operations, and how components interact", "The physical hardware costs", "The network connectivity"], answer: "The structure, operations, and how components interact" },
+    { question: "In the restaurant analogy, what do the implementation details such as the layout of the kitchen and the staff hierarchy represent?", options: ["The Architecture", "The Microarchitecture", "The Organization", "The Instruction Set"], answer: "The Organization" },
+    { question: "Which of the following defines the attributes of a system apparent to the programmer that directly force the program's logical execution?", options: ["Computer Organization", "System Design", "Computer Architecture", "Microarchitecture"], answer: "Computer Architecture" },
+    { question: "According to the lecture, which pillar of Computer Architecture includes the CPU's functions, programming languages, data formats, and instructions?", options: ["System design", "Microarchitecture", "Instruction set architecture (ISA)", "Network architecture"], answer: "Instruction set architecture (ISA)" },
+    { question: "What does Microarchitecture specifically define in the context of a computer system?", options: ["The physical casing of the computer", "The data processing and storage element or data paths", "The high-level programming language used", "The graphical user interface"], answer: "The data processing and storage element or data paths" },
+    { question: "The Little Man Computer (LMC) is an instructional model based on which famous computer architecture?", options: ["Harvard architecture", "von Neumann architecture", "Turing architecture", "ARM architecture"], answer: "von Neumann architecture" },
+    { question: "Who invented the Little Man Computer (LMC) in 1965?", options: ["Charles Babbage", "Alan Turing", "Dr. Stuart Madnick", "John von Neumann"], answer: "Dr. Stuart Madnick" },
+    { question: "What specific part of a CPU does the 'Little Man' represent in the LMC model?", options: ["The Arithmetic Logic Unit", "The memory cache", "The control unit", "The external hard drive"], answer: "The control unit" },
+    { question: "What are the two main portions into which the LMC instruction cycle is broken?", options: ["Input and Output", "Load and Store", "Fetch and Execute", "Compile and Run"], answer: "Fetch and Execute" },
+    { question: "In the LMC, how many total storage locations are available, and how are they indexed?", options: ["10 locations indexed 0 to 9", "100 locations indexed 0 thru 99", "256 locations indexed 0 to 255", "1000 locations indexed 0 thru 999"], answer: "100 locations indexed 0 thru 99" },
+    { question: "What is the maximum size of an integer that can be stored in a single LMC memory location?", options: ["A 2 digit integer", "A 3 digit integer", "An 8-bit binary word", "A 4 digit integer"], answer: "A 3 digit integer" },
+    { question: "In the LMC, what is the specific name for the unique 3-digit storage location used by the CPU to hold data being manipulated or processed?", options: ["Program Counter", "Inbox", "Calculator or Accumulator", "Mailbox"], answer: "Calculator or Accumulator" },
+    { question: "What is the specific function of the Program Counter (PC) in the LMC?", options: ["It keeps track of the address of the instruction to be executed", "It stores the mathematical result of an addition", "It holds the physical user input", "It counts the number of errors in a program"], answer: "It keeps track of the address of the instruction to be executed" },
+    { question: "Which register in the LMC is explicitly described as a 2-digit location?", options: ["The Accumulator", "The Inbox", "The Outbox", "The Instruction location counter / Program Counter"], answer: "The Instruction location counter / Program Counter" },
+    { question: "What is the machine code opcode for the Load (LDA) instruction?", options: ["1xx", "3xx", "5xx", "901"], answer: "5xx" },
+    { question: "Which mnemonic is used for the instruction that stores the contents of the accumulator to a specific memory address?", options: ["LDA", "STA", "ADD", "OUT"], answer: "STA" },
+    { question: "When using the ADD (1xx) instruction, what is the maximum total value the accumulator can hold?", options: ["99", "100", "255", "999"], answer: "999" },
+    { question: "What specifically happens if a Subtract (SUB) instruction causes a negative result in the LMC?", options: ["The computer crashes", "A negative flag is set so that BRP can be used properly", "The accumulator shows an error code", "The program counter resets to zero"], answer: "A negative flag is set so that BRP can be used properly" },
+    { question: "What is the exact machine code for the Input (INP) instruction?", options: ["000", "901", "902", "5xx"], answer: "901" },
+    { question: "What is the exact machine code for the Output (OUT) instruction?", options: ["901", "902", "000", "6xx"], answer: "902" },
+    { question: "Which instruction uses the machine code 000 to stop the LMC simulator from executing the program?", options: ["BRZ", "HLT", "BRA", "DAT"], answer: "HLT" },
+    { question: "Under what condition does the BRP (8xx) instruction branch to a new address?", options: ["Only if the accumulator is exactly zero", "If the contents of the accumulator are ZERO or positive (i.e., the negative flag is not set)", "If the accumulator is strictly greater than zero", "If the accumulator contains a negative value"], answer: "If the contents of the accumulator are ZERO or positive (i.e., the negative flag is not set)" },
+    { question: "What does the DAT instruction do when the assembly code is compiled?", options: ["It deletes the memory at that location", "It transfers a variable to the accumulator", "It reserves as data the memory address reached when this instruction is compiled", "It stops the simulator entirely"], answer: "It reserves as data the memory address reached when this instruction is compiled" },
+    { question: "In an LMC instruction, what does the left-most digit represent?", options: ["The memory position (0-9)", "An operation code 0 to 9 telling what type of action to take", "The register number", "The flag bit"], answer: "An operation code 0 to 9 telling what type of action to take" },
+    { question: "In an LMC instruction, what do the right 2 digits represent?", options: ["They indicate the memory position (0 to 99)", "They represent the immediate data value", "They define the operation code", "They are ignored by the Little Man"], answer: "They indicate the memory position (0 to 99)" },
+    { question: "At which memory position does an LMC program always start executing instructions?", options: ["01", "10", "99", "00"], answer: "00" },
+    { question: "What is the background program called that compiles mnemonic instructions into numeric 3-digit instruction codes?", options: ["The linker", "The simulator", "The compiler", "The operating system"], answer: "The compiler" },
+    { question: "What is the primary purpose of Mnemonic Codes in LMC?", options: ["They are executed directly by the hardware", "They simplify programming by using easy-to-remember abbreviations", "They compress the memory size of the program", "They encrypt the data in the mailboxes"], answer: "They simplify programming by using easy-to-remember abbreviations" },
+    { question: "According to the lecture, what is Machine Code?", options: ["A high-level programming language", "Human-readable text instructions", "The binary code understood and executed by the computer", "A compiler tool"], answer: "The binary code understood and executed by the computer" },
+    { question: "When the Input operation (INP) executes, what happens to the instruction counter?", options: ["It resets to 00", "It is incremented from 0 to 1 (or to the next counter)", "It is replaced by the input value", "It pauses until output is required"], answer: "It is incremented from 0 to 1 (or to the next counter)" },
+    { question: "When the Store (STA) operation places a value into a memory location, what happens to the value in the accumulator?", options: ["It is cleared to zero", "It is moved to the outbox", "The accumulator retains its value", "It is decremented by one"], answer: "The accumulator retains its value" },
+    { question: "When the Output (OUT) operation puts the accumulator contents in the outbox, what happens to the accumulator?", options: ["The contents of the accumulator are not changed", "The accumulator is cleared", "The accumulator receives the next input", "The accumulator value is halved"], answer: "The contents of the accumulator are not changed" },
+    { question: "What is the purpose of a 'label' (such as FIRST) in Little Man Computer assembly code?", options: ["It identifies a position in memory", "It defines a new operation code", "It signifies the end of the program", "It controls the clock speed"], answer: "It identifies a position in memory" },
+    { question: "What do Branching instructions allow a program to do?", options: ["Execute multiple instructions simultaneously", "Execute some instructions under one condition and other instructions under other conditions", "Store data directly into the program counter", "Compile high-level code to machine code"], answer: "Execute some instructions under one condition and other instructions under other conditions" },
+    { question: "During the LMC Execution Cycle, what is the specific role of the 'Decode' step?", options: ["It retrieves the instruction from memory", "It determines the operation to be performed", "It updates the Program Counter", "It outputs data to the screen"], answer: "It determines the operation to be performed" },
+    { question: "What is the final step of the LMC Execution Cycle before it repeats?", options: ["Fetch", "Decode", "Execute", "Update PC (Moves the Program Counter to the next instruction)"], answer: "Update PC (Moves the Program Counter to the next instruction)" },
+    { question: "How are instructions and data values distinctly stored inside the LMC memory?", options: ["Instructions are stored as hexadecimal strings; data as text", "Instructions are stored as binary codes; data values are stored as decimal numbers", "Instructions and data use identical floating-point formats", "Memory cannot store data, only instructions"], answer: "Instructions are stored as binary codes; data values are stored as decimal numbers" },
+    { question: "Which of the following is an explicit limitation of the Little Man Computer's instruction set?", options: ["It only includes basic arithmetic, memory operations, input/output, and control transfer", "It requires a multi-core processor to run", "It cannot perform addition", "It has over 1000 complex opcodes"], answer: "It only includes basic arithmetic, memory operations, input/output, and control transfer" },
+    { question: "What is the typical memory size limitation of the Little Man Computer?", options: ["10 memory locations", "100 memory locations", "1024 memory locations", "64 Megabytes"], answer: "100 memory locations" },
+    { question: "How does using 'Subroutines' help overcome the limitations of the LMC?", options: ["It increases the physical memory size", "It breaks large programs into smaller, reusable parts to manage complexity", "It expands the size of the accumulator", "It allows direct internet access"], answer: "It breaks large programs into smaller, reusable parts to manage complexity" },
+    { question: "How does using 'Assembly Language' help overcome the limitations of the LMC?", options: ["It is a high-level language that automates memory", "It is a low-level language closer to machine code that helps write more efficient programs", "It completely bypasses the control unit", "It translates the program into Java"], answer: "It is a low-level language closer to machine code that helps write more efficient programs" },
+    { question: "According to the sample program notes, what specific addressing mode does the Little Man Computer use exclusively?", options: ["Indirect addressing mode", "Register indirect addressing mode", "Immediate addressing mode", "Direct addressing mode"], answer: "Direct addressing mode" }
+
+
+        ],
+        2: [
+            { question: "Who is credited with creating the first computer in 1822, which relied on vacuum tubes and weighed over 700 pounds?", options: ["Alan Turing", "Charles Babbage", "John von Neumann", "Jack Kilby"], answer: "Charles Babbage" },
+    { question: "What pivotal invention in 1947 revolutionized computing by replacing bulky, unreliable vacuum tubes?", options: ["The Integrated Circuit", "The Microprocessor", "The Transistor", "The Magnetic Core"], answer: "The Transistor" },
+    { question: "Which core technology defines the First Generation of computers (1946-1959)?", options: ["Transistors", "Integrated Circuits", "Vacuum Tubes", "Microprocessors"], answer: "Vacuum Tubes" },
+    { question: "Which core technology defines the Second Generation of computers (1959-1965)?", options: ["Vacuum Tubes", "Transistors", "Artificial Intelligence", "Microprocessors"], answer: "Transistors" },
+    { question: "Which core technology defines the Third Generation of computers (1965-1971)?", options: ["Transistors", "Microprocessors", "Integrated Circuits", "Quantum Processors"], answer: "Integrated Circuits" },
+    { question: "Which core technology defines the Fourth Generation of computers (1971-1980)?", options: ["Artificial Intelligence", "Integrated Circuits", "Microprocessors", "Vacuum Tubes"], answer: "Microprocessors" },
+    { question: "In First Generation computers like the ENIAC and UNIVAC, what was used for data input?", options: ["Keyboards", "Magnetic tape", "Punch cards and paper tape", "Graphical User Interfaces"], answer: "Punch cards and paper tape" },
+    { question: "What technological shift in primary memory occurred during the Second Generation of computers?", options: ["Magnetic drums were replaced by magnetic core technology", "Flash memory replaced hard drives", "Silicon chips replaced vacuum tubes", "Optical disks were introduced"], answer: "Magnetic drums were replaced by magnetic core technology" },
+    { question: "Which programming languages became prominent during the Second Generation of computers?", options: ["Machine language (1s and 0s)", "Assembly languages and early high-level languages like COBOL and FORTRAN", "Object-oriented languages like Java", "Web languages like HTML"], answer: "Assembly languages and early high-level languages like COBOL and FORTRAN" },
+    { question: "How did user interaction fundamentally change during the Third Generation of computers?", options: ["Users switched from keyboards to touch screens", "Users interfaced with an operating system using keyboards and monitors, replacing punch cards", "Users relied entirely on voice recognition", "Computers ran one program at a time without user input"], answer: "Users interfaced with an operating system using keyboards and monitors, replacing punch cards" },
+    { question: "What major milestone was achieved by the Intel 4004 chip in 1971?", options: ["It was the first computer to use a GUI", "It located all components (CPU, memory, I/O controls) onto a single silicon chip", "It introduced the first multi-core processor", "It eliminated the need for secondary storage"], answer: "It located all components (CPU, memory, I/O controls) onto a single silicon chip" },
+    { question: "According to the lecture, what are the primary goals of Fifth Generation computing?", options: ["To invent the transistor", "To miniaturize the integrated circuit", "To develop machines that learn, organize themselves, and respond to natural language", "To standardize assembly language across all platforms"], answer: "To develop machines that learn, organize themselves, and respond to natural language" },
+    { question: "Which of the following is NOT one of the three primary 'Pillars of Computer Architecture' as defined in the lecture?", options: ["Instruction Set Architecture (ISA)", "Microarchitecture", "System Design", "Operating System Engineering"], answer: "Operating System Engineering" },
+    { question: "How does the lecture define Instruction Set Architecture (ISA)?", options: ["The physical layout of the motherboard", "The bridge between software and hardware that defines the machine language instructions the CPU can execute", "The cooling mechanisms of the CPU", "The logic gates inside the ALU"], answer: "The bridge between software and hardware that defines the machine language instructions the CPU can execute" },
+    { question: "What is 'Microarchitecture' responsible for in a computer system?", options: ["Managing software applications", "Defining the logical design of CPU components and how the ISA is implemented in hardware", "Connecting the computer to external networks", "Displaying the graphical user interface"], answer: "Defining the logical design of CPU components and how the ISA is implemented in hardware" },
+    { question: "In the context of the Pillars of Computer Architecture, what does 'System Design' focus on?", options: ["The holistic view, detailing interactions between the CPU, memory, I/O devices, and storage through system buses", "Only the internal registers of the CPU", "The software compilation process", "The development of high-level programming languages"], answer: "The holistic view, detailing interactions between the CPU, memory, I/O devices, and storage through system buses" },
+    { question: "What are the two specific types of operations performed by the Arithmetic Logic Unit (ALU)?", options: ["Input and Output operations", "Arithmetic operations (add, subtract) and Logical operations (AND, OR, NOT, XOR)", "Memory fetching and storing", "Instruction decoding and encoding"], answer: "Arithmetic operations (add, subtract) and Logical operations (AND, OR, NOT, XOR)" },
+    { question: "What is the primary function of the Control Unit (CU) within the CPU?", options: ["To store long-term data files", "To perform complex mathematical calculations", "To decode instructions and generate control signals to coordinate the ALU, registers, and memory", "To render graphics on the monitor"], answer: "To decode instructions and generate control signals to coordinate the ALU, registers, and memory" },
+    { question: "Which CPU register acts as a workspace specifically for holding the intermediate results of ALU operations?", options: ["Program Counter (PC)", "Instruction Register (IR)", "Accumulator (ACC)", "Control Register"], answer: "Accumulator (ACC)" },
+    { question: "Which CPU register specifically tracks the memory address of the next instruction to be fetched?", options: ["Accumulator (ACC)", "Program Counter (PC)", "Instruction Register (IR)", "General-Purpose Register (GPR)"], answer: "Program Counter (PC)" },
+    { question: "What is the specific function of the Control Bus within the System Bus architecture?", options: ["It carries the actual data being processed", "It carries the memory addresses", "It carries command and synchronization signals (like read/write commands) between components", "It powers the CPU"], answer: "It carries command and synchronization signals (like read/write commands) between components" },
+    { question: "During the standard Instruction Cycle, what occurs immediately after the 'Fetch' step?", options: ["Execute: The ALU performs the operation", "Decode: The Control Unit translates the instruction into control signals", "Store: The result is written to memory", "Halt: The processor waits for input"], answer: "Decode: The Control Unit translates the instruction into control signals" },
+    { question: "What is the primary design philosophy of a Complex Instruction Set Computer (CISC)?", options: ["To use fixed-length instructions only", "To execute every instruction in exactly one clock cycle", "To minimize the number of instructions per program, sacrificing the number of cycles per instruction", "To rely entirely on software for complex operations"], answer: "To minimize the number of instructions per program, sacrificing the number of cycles per instruction" },
+    { question: "Which of the following is a key characteristic of CISC architecture regarding compilation?", options: ["The compiler must be extremely complex", "Complex compiler design is NOT needed because the hardware does more of the work", "The compiler must manually manage memory loads and stores", "CISC does not use compilers"], answer: "Complex compiler design is NOT needed because the hardware does more of the work" },
+    { question: "What is the primary design philosophy of a Reduced Instruction Set Computer (RISC)?", options: ["To reduce the cycles per instruction at the cost of requiring more instructions per program", "To maximize the number of addressing modes", "To create instructions with highly variable lengths", "To execute complex multi-step operations in a single instruction"], answer: "To reduce the cycles per instruction at the cost of requiring more instructions per program" },
+    { question: "What defines the 'Load/Store architecture' strictly used in RISC processors?", options: ["Every instruction can interact directly with memory", "Only 'load' and 'store' instructions can access memory; all arithmetic must be performed on registers", "Data can only be loaded from the hard drive, not RAM", "Registers are not used; all operations happen in cache"], answer: "Only 'load' and 'store' instructions can access memory; all arithmetic must be performed on registers" },
+    { question: "According to the CISC vs. RISC summary, how is transistor usage optimized differently in RISC compared to CISC?", options: ["RISC uses transistors primarily for memory registers, whereas CISC uses them for storing complex instructions", "CISC uses transistors for registers, RISC uses them for caching", "RISC completely eliminates the need for transistors", "They both use transistors in the exact same manner"], answer: "RISC uses transistors primarily for memory registers, whereas CISC uses them for storing complex instructions" },
+    { question: "What is the defining physical characteristic of the Von Neumann Architecture?", options: ["It uses two entirely separate CPUs", "Both data and instructions share the exact same memory space and use the same buses", "It relies entirely on cloud storage", "Instructions are hardwired and cannot be changed"], answer: "Both data and instructions share the exact same memory space and use the same buses" },
+    { question: "What is the 'Von Neumann bottleneck'?", options: ["The CPU overheating due to excessive clock speed", "The performance limitation caused by instructions and data sharing the same bus, preventing simultaneous fetching", "A failure in the L1 cache", "The limitation of having too many registers"], answer: "The performance limitation caused by instructions and data sharing the same bus, preventing simultaneous fetching" },
+    { question: "How does the Harvard Architecture solve the Von Neumann bottleneck?", options: ["By utilizing physically separate memory and signal pathways (buses) for instructions and data", "By increasing the clock speed of the CPU", "By removing the memory entirely and relying on registers", "By merging the ALU and the Control Unit"], answer: "By utilizing physically separate memory and signal pathways (buses) for instructions and data" },
+    { question: "In modern computing, where is the Harvard Architecture most commonly implemented due to its high performance requirements?", options: ["In standard desktop PCs", "In mechanical calculators", "In Digital Signal Processors (DSPs) and microcontrollers", "In magnetic tape drives"], answer: "In Digital Signal Processors (DSPs) and microcontrollers" },
+    { question: "In a Multicore Architecture, how is cache memory typically distributed among the cores?", options: ["There is no cache memory in multicore systems", "All cores share a single L1 cache", "Each core has its own individual L1 cache, but they share the L2 and L3 caches", "Cache is located on an external hard drive"], answer: "Each core has its own individual L1 cache, but they share the L2 and L3 caches" },
+    { question: "What are the two parameters used in Flynn's Taxonomy to classify computer architectures?", options: ["Clock speed and memory size", "The number of Instruction Streams and Data Streams", "The number of cores and thread count", "The bus width and voltage"], answer: "The number of Instruction Streams and Data Streams" },
+    { question: "In Flynn's Taxonomy, what does SISD stand for?", options: ["System Instruction, System Data", "Synchronous Input, Synchronous Data", "Single Instruction, Single Data", "Serial Interface, Sequential Data"], answer: "Single Instruction, Single Data" },
+    { question: "Which architecture under Flynn's Taxonomy uses one instruction to operate on multiple data streams simultaneously, making it ideal for vector operations?", options: ["SISD", "MISD", "MIMD", "SIMD"], answer: "SIMD" },
+    { question: "What are common real-world implementations of SIMD architecture?", options: ["Vintage uniprocessor PCs", "Space Shuttle flight controllers", "Graphics Processing Units (GPUs) and multimedia instruction extensions like MMX", "Distributed grid computing networks"], answer: "Graphics Processing Units (GPUs) and multimedia instruction extensions like MMX" },
+    { question: "Which category of Flynn's Taxonomy involves multiple instructions operating on a single data stream and is considered highly uncommon in general computing?", options: ["SISD", "SIMD", "MISD", "MIMD"], answer: "MISD" },
+    { question: "What are the primary practical applications of MISD architecture?", options: ["Rendering 3D graphics", "Fault-tolerant systems (like Space Shuttle flight control) and redundant computations", "Standard word processing", "Web hosting"], answer: "Fault-tolerant systems (like Space Shuttle flight control) and redundant computations" },
+    { question: "What is the most common type of parallel computer architecture under Flynn's Taxonomy, where multiple autonomous processors execute different instructions on different data?", options: ["MIMD", "SIMD", "SISD", "MISD"], answer: "MIMD" },
+    { question: "In a Shared Memory MIMD system (like SMP), how do processors primarily communicate with each other?", options: ["Through external internet servers", "Through a single global memory space that all processors can access", "Through isolated message passing channels", "By physically swapping hard drives"], answer: "Through a single global memory space that all processors can access" },
+    { question: "In a Distributed Memory MIMD system (Multicomputers), how do processors communicate?", options: ["By accessing a shared global RAM", "By sharing the same Control Unit", "Over an interconnection network using message passing (e.g., MPI), as each has its own local memory", "They cannot communicate with each other"], answer: "Over an interconnection network using message passing (e.g., MPI), as each has its own local memory" },
+    { question: "What is a major challenge or disadvantage associated with programming and utilizing MIMD systems?", options: ["They can only execute one program at a time", "They are strictly limited to single-core CPUs", "Ensuring load balancing and managing complex inter-processor communication overhead", "They do not support fault tolerance"], answer: "Ensuring load balancing and managing complex inter-processor communication overhead" }
+
+        ], 
+        3: [
+            { question: "What does Processor Organization specifically refer to in a computer system?", options: ["The layout of the motherboard", "The structure and design of the Central Processing Unit (CPU)", "The architecture of the hard drive", "The operating system's kernel structure"], answer: "The structure and design of the Central Processing Unit (CPU)" },
+    { question: "What does Processor Organization critically determine for a computer?", options: ["Its network bandwidth", "How efficiently and effectively a computer can execute instructions and process data", "The size of the physical monitor", "The type of programming languages it can compile"], answer: "How efficiently and effectively a computer can execute instructions and process data" },
+    { question: "How does a well-designed processor organization directly influence instruction execution?", options: ["By encrypting data automatically", "By ensuring efficient fetching, decoding, and execution of instructions", "By converting all code to binary", "By increasing the hard drive speed"], answer: "By ensuring efficient fetching, decoding, and execution of instructions" },
+    { question: "Which processor technique reduces power consumption specifically by disabling clock signals to inactive components?", options: ["Power Gating", "Clock Gating", "Dynamic Voltage Scaling", "Overclocking"], answer: "Clock Gating" },
+    { question: "Which power management technique shuts off power entirely to unused parts of the processor?", options: ["Clock Gating", "Thermal Throttling", "Power Gating", "Dynamic Voltage Scaling"], answer: "Power Gating" },
+    { question: "What is the primary function of Dynamic Voltage Scaling in a processor?", options: ["It increases the voltage to maximize heat output", "It standardizes the voltage across all components", "It adjusts voltage and frequency based on workload to save energy", "It disables the clock signal entirely"], answer: "It adjusts voltage and frequency based on workload to save energy" },
+    { question: "According to the fundamental requirements of a processor, what does the 'Interpret instruction' step do?", options: ["It reads data from memory", "It determines what action to perform", "It writes data to an I/O module", "It translates code into a high-level language"], answer: "It determines what action to perform" },
+    { question: "Which of the following is NOT one of the core requirements expected of a Processor as outlined in the lecture?", options: ["Fetch instruction", "Process data", "Compile source code", "Write data"], answer: "Compile source code" },
+    { question: "In the Instruction Cycle State Diagram, what step immediately follows 'Instruction fetch'?", options: ["Data operation", "Instruction operation decoding", "Operand fetch", "Operand store"], answer: "Instruction operation decoding" },
+    { question: "In the Instruction Cycle State Diagram, what step calculates the memory location of the data to be processed?", options: ["Instruction address calculation", "Instruction fetch", "Operand address calculation", "Data operation"], answer: "Operand address calculation" },
+    { question: "What are the four major internal components of the processor?", options: ["RAM, ROM, ALU, and Hard Drive", "ALU, Control Unit, Registers, and System Bus", "Motherboard, CPU, GPU, and RAM", "Cache, MUX, Flip-Flops, and Clock"], answer: "ALU, Control Unit, Registers, and System Bus" },
+    { question: "Which CPU component moves data and instructions in and out of the processor and controls the operation of the ALU?", options: ["The Registers", "The System Bus", "The Control Unit", "The Cache"], answer: "The Control Unit" },
+    { question: "What component acts as the primary pathway between the processor, memory, and I/O modules?", options: ["The Control Unit", "The System Bus", "The ALU", "The Status Flags"], answer: "The System Bus" },
+    { question: "What is the primary function of the Arithmetic Logic Unit (ALU)?", options: ["Storing long-term memory", "Performing arithmetic operations and logical operations", "Generating timing signals", "Moving data to external I/O devices"], answer: "Performing arithmetic operations and logical operations" },
+    { question: "What is the specific role of Registers within the CPU?", options: ["They connect the CPU to the internet", "They act as small, high-speed storage locations to hold data, instructions, or addresses temporarily", "They permanently store the operating system", "They cool down the ALU during heavy operations"], answer: "They act as small, high-speed storage locations to hold data, instructions, or addresses temporarily" },
+    { question: "Which specific CPU register holds the address of the next instruction to be fetched from memory?", options: ["Instruction Register (IR)", "Accumulator (AC)", "Program Counter (PC)", "Address Register (AR)"], answer: "Program Counter (PC)" },
+    { question: "Which CPU register is used specifically to store intermediate results of arithmetic and logic operations?", options: ["Accumulator (AC)", "Program Counter (PC)", "Instruction Register (IR)", "Memory Buffer Register (MBR)"], answer: "Accumulator (AC)" },
+    { question: "Which CPU register stores the current instruction that is actively being executed?", options: ["Address Register (AR)", "Program Counter (PC)", "Instruction Register (IR)", "Accumulator (AC)"], answer: "Instruction Register (IR)" },
+    { question: "What is the role of Cache memory in the CPU?", options: ["It acts as a backup for the hard drive", "It stores frequently accessed data and instructions to reduce fetch time from main memory", "It controls the voltage of the processor", "It permanently stores the BIOS"], answer: "It stores frequently accessed data and instructions to reduce fetch time from main memory" },
+    { question: "What component generates timing signals to synchronize the operations of all CPU components?", options: ["The Flip-Flop", "The ALU", "The Clock", "The Multiplexer"], answer: "The Clock" },
+    { question: "What hardware component selects one of several input signals and forwards the chosen input into a single line to manage data flow?", options: ["The Accumulator", "The Flip-Flop", "The Data Bus", "The Multiplexer (MUX)"], answer: "The Multiplexer (MUX)" },
+    { question: "What are the basic storage elements used to store individual bits of data within registers and control circuits?", options: ["Multiplexers", "Flip-Flops", "Clocks", "System Buses"], answer: "Flip-Flops" },
+    { question: "In a Single Accumulator Organization, how many registers hold intermediate data for arithmetic or logical operations?", options: ["Seven", "Two", "Only one accumulator register", "None, it uses RAM instead"], answer: "Only one accumulator register" },
+    { question: "In the General Register Organization model described, how are the seven registers connected to the Arithmetic Logic Unit (ALU)?", options: ["Through a single data bus", "Through two multiplexers forming buses A and B", "Directly through the Control Unit", "Through the external hard drive"], answer: "Through two multiplexers forming buses A and B" },
+    { question: "In a General Register Organization, what determines which register data is placed onto the buses feeding the ALU?", options: ["The Flip-Flops", "The MUX selection lines", "The Program Counter", "The Clock speed"], answer: "The MUX selection lines" },
+    { question: "In a General Register Organization, what hardware component controls which destination register will receive the ALU's result from the output bus?", options: ["A decoder", "A multiplexer", "The system clock", "The Program Counter"], answer: "A decoder" },
+    { question: "Which control signal generated by the Control Unit chooses the source register for bus A?", options: ["MUX B selector (SELB)", "MUX A selector (SELA)", "ALU operation selector (OPR)", "Decoder destination selector (SELD)"], answer: "MUX A selector (SELA)" },
+    { question: "Which control signal defines the specific mathematical or logical action the ALU will execute?", options: ["ALU operation selector (OPR)", "Decoder destination selector (SELD)", "MUX A selector (SELA)", "MUX B selector (SELB)"], answer: "ALU operation selector (OPR)" },
+    { question: "What memory management structure does Stack Organization primarily use?", options: ["First-In-First-Out (FIFO)", "Random Access Memory (RAM)", "Last-In-First-Out (LIFO)", "Direct Access Storage"], answer: "Last-In-First-Out (LIFO)" },
+    { question: "In Stack Organization, what does the Stack Pointer (SP) register hold?", options: ["The address of the next instruction", "The total size of the stack", "The address of the top element on the stack", "The bottom-most element of the stack"], answer: "The address of the top element on the stack" },
+    { question: "What happens to the Stack Pointer (SP) during a Push operation?", options: ["It is decremented", "It is cleared to zero", "It is incremented", "It remains unchanged"], answer: "It is incremented" },
+    { question: "What happens to the Stack Pointer (SP) during a Pop operation?", options: ["It is incremented", "It is decremented", "It is cleared to zero", "It points to the Program Counter"], answer: "It is decremented" },
+    { question: "What are the two primary roles performed by registers in the processor?", options: ["Data storage and graphical processing", "User-visible registers and Control/Status registers", "Input processing and Output rendering", "Clock gating and Power gating"], answer: "User-visible registers and Control/Status registers" },
+    { question: "Which category of user-visible registers can be assigned to a variety of functions by the programmer (e.g., data, address, memory reference)?", options: ["Data registers", "Address registers", "General-purpose registers", "Condition codes"], answer: "General-purpose registers" },
+    { question: "What is a defining limitation of Data registers?", options: ["They can only store floating-point numbers", "They are strictly read-only", "They may be used only to hold data and cannot hold addresses", "They cannot hold values larger than 8 bits"], answer: "They may be used only to hold data and cannot hold addresses" },
+    { question: "Which of the following is an explicit example of an Address Register?", options: ["Accumulator", "Instruction Register", "Stack Pointer", "Memory Buffer Register"], answer: "Stack Pointer" },
+    { question: "What is the purpose of Condition Codes (flags) in the processor?", options: ["To define the system clock speed", "To encrypt user data", "They are bits set by the processor to indicate the result of operations, such as positive, negative, zero, or overflow", "To hold the memory address of the next instruction"], answer: "They are bits set by the processor to indicate the result of operations, such as positive, negative, zero, or overflow" },
+    { question: "Which control register contains the specific memory location address where data is to be read or written?", options: ["Memory address register (MAR)", "Instruction Register (IR)", "Memory buffer register (MBR)", "Program Counter (PC)"], answer: "Memory address register (MAR)" },
+    { question: "Which control register contains the actual word of data to be written to memory or read from memory?", options: ["Memory address register (MAR)", "Memory buffer register (MBR)", "Program Counter (PC)", "Instruction Register (IR)"], answer: "Memory buffer register (MBR)" },
+    { question: "To which specific bus does the Memory Address Register (MAR) connect directly?", options: ["The data bus", "The control bus", "The address bus", "The I/O bus"], answer: "The address bus" },
+    { question: "To which specific bus does the Memory Buffer Register (MBR) connect directly?", options: ["The address bus", "The control bus", "The internal CPU bus", "The data bus"], answer: "The data bus" },
+    { question: "What does the Program Status Word (PSW) register typically contain?", options: ["The next instruction to fetch", "Condition codes (flags) plus other status information like interrupt enable/disable", "The exact memory address of the operating system", "The user's password hash"], answer: "Condition codes (flags) plus other status information like interrupt enable/disable" },
+    { question: "Which flag in the Program Status Word (PSW) is set if an arithmetic operation results in a carry or borrow bit?", options: ["Overflow flag", "Zero flag", "Sign flag", "Carry flag"], answer: "Carry flag" },
+    { question: "During the instruction fetch cycle, what is the first step involving the Program Counter (PC)?", options: ["The PC is cleared to zero", "The address in the PC is moved to the MAR and placed on the address bus", "The PC is incremented by 2", "The PC reads from the MBR"], answer: "The address in the PC is moved to the MAR and placed on the address bus" },
+    { question: "When the control unit examines the Instruction Register (IR) and finds an operand specifier using indirect addressing, what cycle is triggered?", options: ["A direct cycle", "An execution cycle", "An indirect cycle", "A halt cycle"], answer: "An indirect cycle" },
+    { question: "What is the primary goal of Register Organization Techniques in a processor?", options: ["To physically cool down the processor", "To improve performance by reducing data dependencies, minimizing memory access, and enhancing instruction-level parallelism", "To permanently store user files on the CPU", "To limit the number of programs that can run at once"], answer: "To improve performance by reducing data dependencies, minimizing memory access, and enhancing instruction-level parallelism" },
+    { question: "Which register organization technique dynamically maps original registers to temporary or virtual registers to resolve data dependencies?", options: ["Register Windowing", "Register Allocation", "Register Stack", "Register Renaming"], answer: "Register Renaming" },
+    { question: "Which technique uses compiler algorithms to assign registers to frequently accessed variables, minimizing memory accesses?", options: ["Register Allocation", "Register Renaming", "Register Windowing", "Register Stack"], answer: "Register Allocation" },
+    { question: "Which technique utilizes a sliding subset of registers that is accessible at a given time to efficiently manage a large number of physical registers?", options: ["Register Renaming", "Register Allocation", "Register Windowing", "Register Stack"], answer: "Register Windowing" },
+    { question: "Which processor architecture commonly uses Register Windowing to handle function calls and context switching?", options: ["CISC processors", "RISC processors", "Quantum processors", "MISD processors"], answer: "RISC processors" },
+    { question: "How does a Register Stack organization handle function calls?", options: ["It writes the function call to the hard drive", "Registers are pushed onto a stack when a function is called and popped when the function returns", "It creates a new virtual machine", "It ignores nested function calls"], answer: "Registers are pushed onto a stack when a function is called and popped when the function returns" }
+
+            ],
+        4: [
+            { question: "How does the lecture formally define an Arithmetic Logic Unit (ALU)?", options: ["A storage drive for floating-point data", "A part of a central processing unit (CPU) that carries out arithmetic and logic operations", "A graphical processing node", "A bus controller that manages memory states"], answer: "A part of a central processing unit (CPU) that carries out arithmetic and logic operations" },
+    { question: "In some processors, the ALU is structurally divided into which two distinct units?", options: ["An arithmetic unit (AU) and a logic unit (LU)", "A control unit (CU) and a memory unit (MU)", "A shift unit (SU) and a float unit (FU)", "A multiplexer unit (MUX) and a decoder unit (DEC)"], answer: "An arithmetic unit (AU) and a logic unit (LU)" },
+    { question: "Why might a modern processor contain more than one Arithmetic Unit (AU)?", options: ["To store both operating system and user data", "For redundancy in case of a hardware failure", "To have one dedicated for fixed-point operations and another for floating-point operations", "To handle network inputs separately from keyboard inputs"], answer: "To have one dedicated for fixed-point operations and another for floating-point operations" },
+    { question: "What is the primary architectural purpose of utilizing an ALU within a CPU?", options: ["To replace the need for Random Access Memory", "To speed up a CPU's overall processing by specializing math and logic functions, allowing different CPU portions to perform simultaneous operations", "To manage power consumption during idle states", "To convert analog signals into digital signals"], answer: "To speed up a CPU's overall processing by specializing math and logic functions, allowing different CPU portions to perform simultaneous operations" },
+    { question: "Which famous computing pioneer published the EDVAC report in 1945, providing the first formal proposal for the concept of an ALU?", options: ["Alan Turing", "Charles Babbage", "John von Neumann", "Ada Lovelace"], answer: "John von Neumann" },
+    { question: "Released in 1970, what was the historic significance of the Intel 74181?", options: ["It was the first computer to defeat a human at chess", "It was the first complete ALU implemented on a single silicon chip", "It introduced the first graphical user interface", "It was the first 64-bit processor"], answer: "It was the first complete ALU implemented on a single silicon chip" },
+    { question: "What was the specific bit-width of the historic Intel 74181 ALU?", options: ["2-bit", "4-bit", "8-bit", "16-bit"], answer: "4-bit" },
+    { question: "What standard geometric shape is conventionally used in schematic diagrams to represent an ALU?", options: ["A perfect square", "A 'V' shaped block", "A circle", "A standard rectangle"], answer: "A 'V' shaped block" },
+    { question: "Which specific input to the ALU provides the control signals that select the mathematical or logical operation to be performed?", options: ["The Status Flags", "The Program Counter", "The Opcode", "The Operand"], answer: "The Opcode" },
+    { question: "What type of ALU output provides critical information about the state of a calculation, such as whether the result is Zero, Carry, Overflow, or Sign?", options: ["The Opcode", "The Data Bus", "Status Flags", "Multiplexer Selectors"], answer: "Status Flags" },
+    { question: "Which of the following specific hardware components are cited as fundamental for executing addition and subtraction within an Arithmetic Unit?", options: ["Decoders and Encoders", "Half Adders, Full Adders, and Ripple Carry Adders", "Barrel Shifters", "Flip-Flops only"], answer: "Half Adders, Full Adders, and Ripple Carry Adders" },
+    { question: "Which specialized algorithm is explicitly mentioned in the lecture for performing complex multiplication operations within the Arithmetic Unit?", options: ["Dijkstra's algorithm", "Booth's algorithm", "Euclid's algorithm", "The Ripple Carry algorithm"], answer: "Booth's algorithm" },
+    { question: "What is the primary function of the Logic Unit (LU) within the broader ALU?", options: ["To calculate floating-point decimals", "To perform bitwise operations like AND, OR, NOT, and XOR for data masking and bit manipulation", "To store variables during execution", "To route network traffic"], answer: "To perform bitwise operations like AND, OR, NOT, and XOR for data masking and bit manipulation" },
+    { question: "In an Arithmetic Control System, what hardware component is specifically used in conjunction with adders to perform 2's complement subtraction?", options: ["Flip-Flops", "Multiplexers", "Inverters (NOT gates)", "Capacitors"], answer: "Inverters (NOT gates)" },
+    { question: "How are multiplication operations fundamentally controlled and executed at the hardware level?", options: ["Using logarithmic tables stored in ROM", "Through a sequence of add and shift operations utilizing shift registers and adders", "By running a high-level software loop", "By routing data to the Logic Unit (LU)"], answer: "Through a sequence of add and shift operations utilizing shift registers and adders" },
+    { question: "How are division operations managed within Arithmetic Control Systems?", options: ["Through sequential subtraction and shifting", "By inverting the divisor and using Booth's algorithm", "By converting the integers to floating-point", "Through bitwise XOR operations"], answer: "Through sequential subtraction and shifting" },
+    { question: "According to the lecture, which of the following is a real-world example of a system relying heavily on Arithmetic Control Systems?", options: ["A basic mechanical typewriter", "Flight Control Systems continuously calculating altitude and speed", "A standard light switch", "A passive network cable"], answer: "Flight Control Systems continuously calculating altitude and speed" },
+    { question: "What is the strict difference between a Logical Shift and an Arithmetic Shift?", options: ["A Logical Shift fills empty spaces with 0s, while an Arithmetic Shift preserves the sign bit", "A Logical Shift only works on positive numbers", "An Arithmetic Shift circles bits back around to the beginning", "There is no difference in hardware, only in software"], answer: "A Logical Shift fills empty spaces with 0s, while an Arithmetic Shift preserves the sign bit" },
+    { question: "What type of shift operation ensures that bits shifted out of one end of a register re-enter the register at the opposite end?", options: ["Logical Shift", "Arithmetic Shift", "Circular Shift (or Rotate)", "Barrel Shift"], answer: "Circular Shift (or Rotate)" },
+    { question: "Which specific hardware architecture is used to execute a shift of multiple bit positions in a single clock cycle, bypassing slow sequential logic?", options: ["A Ripple Carry Adder", "A Flip-Flop Array", "A Barrel Shifter", "A Full Adder"], answer: "A Barrel Shifter" },
+    { question: "In Digital Signal Processing (DSP), for what mathematical operations are shift control systems heavily and efficiently utilized?", options: ["Calculating square roots", "Fast multiplication or division by powers of 2", "Generating random numbers", "Floating point addition"], answer: "Fast multiplication or division by powers of 2" },
+    { question: "Which notable data compression algorithms rely on shift control systems to efficiently manipulate bits?", options: ["RSA and AES", "TCP/IP and UDP", "Huffman coding and LZW", "HTML and CSS"], answer: "Huffman coding and LZW" },
+    { question: "Which standard error detection mechanism employs shift registers to calculate checksums for ensuring data integrity?", options: ["Cyclic Redundancy Check (CRC)", "Parity Deletion", "Two's Complement", "Booth's Checksum"], answer: "Cyclic Redundancy Check (CRC)" },
+    { question: "What is the primary architectural purpose of Logic Control Systems?", options: ["To physically route power to the CPU", "To evaluate boolean expressions, make decisions, and control the flow of data based on specific conditions", "To convert AC power to DC power", "To store large files on magnetic media"], answer: "To evaluate boolean expressions, make decisions, and control the flow of data based on specific conditions" },
+    { question: "In logic control architectures, what defines the fundamental difference between Combinational and Sequential logic?", options: ["Combinational logic is faster but uses more power", "Combinational output depends only on the current input, while sequential output depends on the current input and past states (using memory)", "Sequential logic requires software, whereas combinational is purely hardware", "Combinational logic uses adders; sequential uses shift registers"], answer: "Combinational output depends only on the current input, while sequential output depends on the current input and past states (using memory)" },
+    { question: "What does a Programmable Logic Controller (PLC) do in the context of real-world Logic Control Systems?", options: ["It routes internet packets", "It controls industrial automation and manufacturing processes like assembly lines and robotic arms", "It calculates the physics for 3D video games", "It encrypts banking transactions"], answer: "It controls industrial automation and manufacturing processes like assembly lines and robotic arms" },
+    { question: "In the 1-bit ALU design detailed in the lecture, what specific component dictates whether the ALU performs a SUM, AND, OR, or XOR?", options: ["The status flags", "The carry-in bit", "The selection lines of the multiplexer", "The system clock pulse"], answer: "The selection lines of the multiplexer" },
+    { question: "According to the truth table for the 1-bit ALU, which operation corresponds strictly to the MUX selection lines '00'?", options: ["AND", "OR", "XOR", "SUM"], answer: "SUM" },
+    { question: "According to the truth table for the 1-bit ALU, which operation corresponds strictly to the MUX selection lines '11'?", options: ["SUM", "AND", "OR", "XOR"], answer: "XOR" },
+    { question: "What is another highly common technical name for a Multiplexer (MUX)?", options: ["A Data Selector", "A Decoder", "A Flip-Flop", "An Inverter"], answer: "A Data Selector" },
+    { question: "What is the mathematical relationship between the number of inputs and the number of select lines in a standard Multiplexer?", options: ["A multiplexer with n inputs has 2n select lines", "A multiplexer with 2^n inputs has n select lines", "A multiplexer with n inputs has n+1 select lines", "A multiplexer with 2 inputs has 4 select lines"], answer: "A multiplexer with 2^n inputs has n select lines" },
+    { question: "Based on multiplexer rules, a 4-to-1 (4:1) Multiplexer must require exactly how many input lines and select lines?", options: ["4 input lines and 4 select lines", "2 input lines and 4 select lines", "4 input lines and 2 select lines", "8 input lines and 3 select lines"], answer: "4 input lines and 2 select lines" },
+    { question: "How can a complete 8-bit ALU be constructed using the basic 1-bit ALU designs?", options: ["By running a single 1-bit ALU eight times in sequence", "By connecting eight 1-bit ALUs together in a Ripple Carry architecture", "By using a single 8-to-1 multiplexer", "By replacing the Full Adder with a ROM chip"], answer: "By connecting eight 1-bit ALUs together in a Ripple Carry architecture" },
+    { question: "How does the 'Ripple Carry' architecture physically function when chaining 1-bit ALUs together?", options: ["The carry out of bit position i is connected to the carry in of bit position i+1", "All carry bits are calculated simultaneously using a dedicated lookahead chip", "The carry bits are stored in RAM until the calculation finishes", "The carry out of bit i is connected to the MUX select line of bit i+1"], answer: "The carry out of bit position i is connected to the carry in of bit position i+1" },
+    { question: "Which of the following is cited as a daily, real-world application of Logic Control Systems?", options: ["A mechanical wall clock", "Traffic Light Control Systems evaluating sensor inputs and timers", "A purely analog radio", "A standard incandescent lightbulb"], answer: "Traffic Light Control Systems evaluating sensor inputs and timers" },
+    { question: "In the schematic block diagram of a 1-bit ALU, which specific component handles the actual addition before the result is routed into the MUX?", options: ["The Logical Circuit", "The Full Adder", "The Decoder", "The Status Flag Register"], answer: "The Full Adder" },
+    { question: "Which Logic Control component is responsible for translating encoded inputs into a set of distinct, specific output signals?", options: ["Multiplexers", "Decoders", "Flip-Flops", "Inverters"], answer: "Decoders" },
+    { question: "In the context of Sequential Logic Control Systems, what is the primary structural role of a Flip-Flop or Register?", options: ["To boost the electrical voltage of a signal", "To act as memory elements storing past states", "To convert binary to hexadecimal", "To select between multiple data streams"], answer: "To act as memory elements storing past states" },
+    { question: "Which of the following systems utilizes Arithmetic Control Systems for real-time tasks like fuel injection optimization and ignition timing?", options: ["Engine Control Units (ECUs)", "Digital Thermostats", "Standard ATMs", "Smart Home Light Switches"], answer: "Engine Control Units (ECUs)" },
+    { question: "According to the block diagram of a 1-bit ALU, how many total inputs go directly into the 4:1 Multiplexer to be selected?", options: ["Two inputs", "Four inputs (from the Full Adder and Logical Circuits)", "Eight inputs", "One input"], answer: "Four inputs (from the Full Adder and Logical Circuits)" },
+    { question: "What is the primary function of Medical Imaging Systems (like CT and MRI) in the context of the lecture?", options: ["They rely purely on mechanical logic", "They rely heavily on Arithmetic Control Systems to rapidly process complex algorithms for image reconstruction", "They use logic decoders to transmit images over the internet", "They operate strictly using logical shifts"], answer: "They rely heavily on Arithmetic Control Systems to rapidly process complex algorithms for image reconstruction" },
+    { question: "How does the lecture explain the boolean output (Y) of a 4-to-1 Multiplexer?", options: ["It is a simple XOR of all inputs", "It is the sum of the four data inputs, each multiplied by a unique boolean combination of the two select lines", "It is an inverted sum of the two select lines", "It is determined purely by the clock cycle"], answer: "It is the sum of the four data inputs, each multiplied by a unique boolean combination of the two select lines" }
+
+
+        ], 
+        5: [
+            { question: "According to the lecture, machine instructions must be capable of performing four specific types of operations. Which of the following is NOT one of them?", options: ["Data transfer between memory and processor registers", "Arithmetic and logical operations on data in processor", "Dynamic memory allocation and garbage collection", "Program sequencing and control (e.g. branches, subroutine calls)"], answer: "Dynamic memory allocation and garbage collection" },
+    { question: "In Machine Instructions notations, how does Register Transfer Notation (RTN) denote the contents of a memory location or a register?", options: ["By using curly braces {LOC}", "By using square brackets [LOC]", "By using the pointer symbol *LOC", "By using parentheses (LOC)"], answer: "By using square brackets [LOC]" },
+    { question: "Which machine instruction notation uses human-readable abbreviations like 'Load R2, LOC' instead of mathematical symbols?", options: ["Register Transfer Notation", "High-Level Notation", "Assembly Language Notation", "Hexadecimal Notation"], answer: "Assembly Language Notation" },
+    { question: "In a 'Three-Address' instruction format (e.g., Add R1, R2, R3), what do the three addresses typically represent?", options: ["Three separate destination registers", "Two source operands and one destination", "Three source operands", "One source operand and two destinations"], answer: "Two source operands and one destination" },
+    { question: "How does a 'Two-Address' instruction (e.g., Add R1, R2) handle the result of its operation?", options: ["It throws away the result", "It automatically pushes the result to a stack", "One of the operand addresses acts as both a source and the destination for the result", "It writes the result to a dedicated third register implicitly"], answer: "One of the operand addresses acts as both a source and the destination for the result" },
+    { question: "What specific hardware component does a 'One-Address' instruction implicitly rely on to hold one of the operands and store the result?", options: ["A stack pointer", "An implied accumulator", "The program counter", "A cache memory block"], answer: "An implied accumulator" },
+    { question: "Which architecture do 'Zero-Address' instructions strictly rely on to perform operations, since they contain no explicit memory addresses?", options: ["A stack", "A queue", "A linked list", "An accumulator"], answer: "A stack" },
+    { question: "How does the lecture formally define 'Addressing Modes'?", options: ["The clock speed required to access memory", "The different ways in which the location of an operand is specified in an instruction", "The security protocols used for memory access", "The translation of IPv4 addresses to MAC addresses"], answer: "The different ways in which the location of an operand is specified in an instruction" },
+    { question: "Which addressing mode specifies the operands implicitly in the definition of the instruction itself (e.g., CMA / Complement Accumulator)?", options: ["Implied Mode", "Immediate Mode", "Direct Mode", "Indexed Mode"], answer: "Implied Mode" },
+    { question: "In 'Immediate Addressing Mode', where exactly is the operand located?", options: ["In a processor register", "In main memory", "It is specified directly in the instruction itself", "On the hard drive"], answer: "It is specified directly in the instruction itself" },
+    { question: "In 'Register Addressing Mode', where are the operands located?", options: ["In processor registers", "In the instruction itself", "In a stack", "In cache memory"], answer: "In processor registers" },
+    { question: "How does 'Register Indirect Mode' locate the operand in memory?", options: ["The instruction specifies a register whose contents give the actual memory address of the operand", "It searches all registers until it finds a matching value", "It pulls the address directly from the Program Counter", "It multiplies the register value by a base offset"], answer: "The instruction specifies a register whose contents give the actual memory address of the operand" },
+    { question: "Which addressing mode automatically increments the register AFTER accessing the operand, making it highly useful for stepping through arrays?", options: ["Indexed Mode", "Register Indirect Mode", "Autoincrement Mode", "Autodecrement Mode"], answer: "Autoincrement Mode" },
+    { question: "In 'Autodecrement Mode', when is the register decremented relative to the memory access?", options: ["The register is decremented AFTER being used as the effective address", "The register is decremented BEFORE being used as the effective address", "The register is decremented simultaneously during execution", "The register is only decremented if the operation fails"], answer: "The register is decremented BEFORE being used as the effective address" },
+    { question: "What defines 'Direct Addressing Mode'?", options: ["The effective address is exactly equal to the address part of the instruction", "The operand is directly embedded in the instruction", "The address is pulled directly from the Accumulator", "It directly targets the CPU cache"], answer: "The effective address is exactly equal to the address part of the instruction" },
+    { question: "How does 'Indirect Addressing Mode' find the effective address of the operand?", options: ["By checking the status flags", "The address field of the instruction gives a memory address where the actual effective address is stored", "By adding the Program Counter to the instruction value", "By asking the user for input"], answer: "The address field of the instruction gives a memory address where the actual effective address is stored" },
+    { question: "Which addressing mode calculates the effective address by adding the address part of the instruction to the content of the Program Counter (PC)?", options: ["Indexed Addressing Mode", "Base Register Addressing Mode", "Relative Addressing Mode", "Direct Addressing Mode"], answer: "Relative Addressing Mode" },
+    { question: "Which addressing mode calculates the effective address by adding the address part of the instruction to the content of a specific index register?", options: ["Indexed Addressing Mode", "Implied Mode", "Relative Addressing Mode", "Autoincrement Mode"], answer: "Indexed Addressing Mode" },
+    { question: "What are the three standard fields that an instruction format is typically divided into?", options: ["Header, Body, Footer", "Opcode, Address field, Mode field", "Clock, Data, Checksum", "Fetch, Decode, Execute"], answer: "Opcode, Address field, Mode field" },
+    { question: "What does the acronym MIPS strictly stand for in computer architecture?", options: ["Multiple Instructions Per Second", "Memory Integration Processing System", "Microprocessor without Interlocked Pipelined Stages", "Macro Instruction Pointer Stack"], answer: "Microprocessor without Interlocked Pipelined Stages" },
+    { question: "Is the MIPS architecture classified as a Complex Instruction Set Computer (CISC) or a Reduced Instruction Set Computer (RISC)?", options: ["CISC", "RISC", "Neither, it is a hybrid", "It is classified as a MISD system"], answer: "RISC" },
+    { question: "What is a defining structural characteristic of all MIPS instructions?", options: ["They have highly variable lengths to save space", "All instructions are exactly 32 bits long", "All instructions are 16 bits long", "They do not use opcodes"], answer: "All instructions are exactly 32 bits long" },
+    { question: "What are the three basic instruction formats utilized in the MIPS architecture?", options: ["A-type, B-type, C-type", "R-type, I-type, J-type", "X-type, Y-type, Z-type", "Data, Address, Control"], answer: "R-type, I-type, J-type" },
+    { question: "What is the primary use of R-Type (Register type) instructions in MIPS?", options: ["For unconditionally jumping to a new memory address", "For arithmetic and logical operations strictly involving registers", "For loading immediate values into memory", "For managing stack pointers"], answer: "For arithmetic and logical operations strictly involving registers" },
+    { question: "In a MIPS R-Type instruction, what does the 'shamt' field specify?", options: ["The shared memory address", "The shift amount for shift instructions", "The status code", "The sign bit"], answer: "The shift amount for shift instructions" },
+    { question: "In an R-Type instruction, what is the specific role of the 'funct' field?", options: ["It calculates the checksum of the instruction", "It selects the specific variant of the operation specified in the opcode", "It points to the next instruction", "It indicates if the instruction is a loop"], answer: "It selects the specific variant of the operation specified in the opcode" },
+    { question: "Which MIPS instruction type is designed for arithmetic/logical operations with immediate values, memory loads/stores, and conditional branches?", options: ["R-Type", "I-Type", "J-Type", "S-Type"], answer: "I-Type" },
+    { question: "How many bits are specifically allocated to the 'immediate' field in a MIPS I-Type instruction?", options: ["8 bits", "16 bits", "26 bits", "32 bits"], answer: "16 bits" },
+    { question: "Which MIPS instruction format is used exclusively for unconditional jumps?", options: ["R-Type", "I-Type", "J-Type", "U-Type"], answer: "J-Type" },
+    { question: "In a MIPS J-Type instruction, how many bits are allocated specifically for the target address?", options: ["16 bits", "26 bits", "32 bits", "6 bits"], answer: "26 bits" },
+    { question: "The assembly instruction 'add $t0, $s1, $s2' is an example of which MIPS instruction format?", options: ["I-Type", "R-Type", "J-Type", "Immediate Type"], answer: "R-Type" },
+    { question: "The assembly instruction 'addi $t0, $s1, 100' is an example of which MIPS instruction format?", options: ["R-Type", "I-Type", "J-Type", "Register Type"], answer: "I-Type" },
+    { question: "How many general-purpose registers are available in the MIPS Architecture?", options: ["16", "32", "64", "128"], answer: "32" },
+    { question: "What is the size (bit-width) of each general-purpose register in the standard MIPS 32-bit architecture?", options: ["8 bits", "16 bits", "32 bits", "64 bits"], answer: "32 bits" },
+    { question: "In MIPS, what is the strict, hardwired value of the `$zero` register (Register 0)?", options: ["It stores the memory address of the first instruction", "It always holds the constant value 0", "It is an accumulator for division remainders", "It flags arithmetic errors"], answer: "It always holds the constant value 0" },
+    { question: "Which MIPS register is reserved specifically as the 'Assembler Temporary' (`$at`) for use within pseudo commands?", options: ["Register 0", "Register 1", "Register 31", "Register 16"], answer: "Register 1" },
+    { question: "What is the designated purpose of the `$v0` and `$v1` registers in MIPS?", options: ["They hold virtual memory addresses", "They are used for returning values from functions", "They store loop counters", "They manage variable scopes"], answer: "They are used for returning values from functions" },
+    { question: "What is the designated purpose of the `$a0 - $a3` registers in MIPS?", options: ["Passing arguments to functions", "Storing arithmetic overflow values", "Holding arrays", "Generating random numbers"], answer: "Passing arguments to functions" },
+    { question: "What is the crucial architectural difference between standard Temporary registers (`$t0-$t9`) and Saved Temporary registers (`$s0-$s7`) during function calls?", options: ["Temporaries are 16-bit; Saved Temporaries are 32-bit", "Saved Temporaries are preserved across function calls, while regular Temporaries are not preserved", "Saved Temporaries can only store strings", "There is no difference; they are interchangeable"], answer: "Saved Temporaries are preserved across function calls, while regular Temporaries are not preserved" },
+    { question: "Which registers in MIPS are explicitly reserved for use by the OS kernel and may change randomly at any time as they are used by interrupt handlers?", options: ["`$k0 - $k1`", "`$t0 - $t1`", "`$v0 - $v1`", "`$ra - $sp`"], answer: "`$k0 - $k1`" },
+    { question: "What does the Global Pointer (`$gp`) register typically store in MIPS?", options: ["The clock speed multiplier", "A pointer to the global data area to be accessed with memory offset addressing", "The IP address of the system", "The location of the CPU cache"], answer: "A pointer to the global data area to be accessed with memory offset addressing" },
+    { question: "Which MIPS register specifically stores the Return Address (the location in the program that a function needs to return to after execution)?", options: ["`$ra`", "`$sp`", "`$fp`", "`$at`"], answer: "`$ra`" },
+    { question: "Are Pointer Registers (such as `$gp`, `$sp`, `$fp`, and `$ra`) preserved across function calls in MIPS?", options: ["No, they are reset to zero", "Yes, all Pointer Registers are preserved across function calls", "Only the Stack Pointer is preserved", "They are randomly overwritten by the kernel"], answer: "Yes, all Pointer Registers are preserved across function calls" },
+    { question: "In MIPS Register organization, what is the Stack Pointer (`$sp`) primarily used for?", options: ["To store the value of the stack pointer", "To point to the next instruction in memory", "To hold string variables", "To track network packets"], answer: "To store the value of the stack pointer" },
+    { question: "According to the lecture, what dictates that individual instructions are brought from memory into the processor one after another in a sequential way?", options: ["The CPU fetch/execute cycle", "The hard drive spindle speed", "The graphical processing unit", "The compiler's randomizer"], answer: "The CPU fetch/execute cycle" }
+
+        ], 
+        6: [
+            { question: "Before pipelining, what are the four standard stages a CPU typically uses to process an instruction?", options: ["Input, Process, Output, Storage", "Fetch, Decode, Execute, Write", "Load, Add, Shift, Store", "Read, Calculate, Branch, Halt"], answer: "Fetch, Decode, Execute, Write" },
+    { question: "In a non-pipelined CPU where each stage takes one cycle, how many total cycles are required to process exactly two instructions?", options: ["2 cycles", "4 cycles", "6 cycles", "8 cycles"], answer: "8 cycles" },
+    { question: "How does the lecture formally define Instruction Pipelining?", options: ["A technique that decreases the physical size of the CPU", "A technique where multiple instructions are overlapped during execution", "A method for increasing the size of the hard drive", "A protocol for connecting multiple computers over a network"], answer: "A technique where multiple instructions are overlapped during execution" },
+    { question: "What everyday household chore is used as an analogy to explain the overlapping efficiency of instruction pipelining?", options: ["Washing dishes", "Mowing the lawn", "Doing laundry (Wash, Dry, Fold, Store)", "Cooking a multi-course meal"], answer: "Doing laundry (Wash, Dry, Fold, Store)" },
+    { question: "What are the five distinct stages of a classic RISC instruction pipeline?", options: ["Fetch, Decode, Execute, Memory Access, Write Back", "Start, Load, Math, Store, End", "Input, Route, Process, Output, Terminate", "Read, Decode, Add, Subtract, Write"], answer: "Fetch, Decode, Execute, Memory Access, Write Back" },
+    { question: "During the 'IF' (Instruction Fetch) stage of the pipeline, from where does the CPU fetch the instruction?", options: ["The Arithmetic Logic Unit", "The hard drive", "Memory", "The outbox"], answer: "Memory" },
+    { question: "What two specific actions occur during the 'ID' (Instruction Decode) pipeline stage?", options: ["Writing to memory and incrementing the PC", "Decoding the instruction to understand the operation and fetching the required register values", "Performing math and outputting results", "Branch prediction and pipeline flushing"], answer: "Decoding the instruction to understand the operation and fetching the required register values" },
+    { question: "Which pipeline stage is responsible for performing ALU (Arithmetic Logic Unit) operations, such as addition or subtraction?", options: ["Instruction Fetch (IF)", "Instruction Decode (ID)", "Execute (EX)", "Memory Access (MEM)"], answer: "Execute (EX)" },
+    { question: "What specific action takes place during the 'MEM' (Memory Access) stage of the pipeline?", options: ["The CPU fetches the next instruction", "If the instruction requires reading or writing data memory (e.g., Load/Store), it happens in this stage", "The ALU calculates the result", "The program counter is reset"], answer: "If the instruction requires reading or writing data memory (e.g., Load/Store), it happens in this stage" },
+    { question: "What is the primary function of the 'WB' (Write Back) pipeline stage?", options: ["Writing data permanently to the hard drive", "Writing the instruction to the console", "Writing the final result back into the register file", "Deleting old data from the cache"], answer: "Writing the final result back into the register file" },
+    { question: "How does the lecture define a 'Pipelining Hazard'?", options: ["A hardware malfunction requiring replacement", "Conditions that cause the pipeline to stall or produce incorrect results", "A computer virus that attacks the CPU", "An overheating event in the processor"], answer: "Conditions that cause the pipeline to stall or produce incorrect results" },
+    { question: "What are the three major categories of pipelining hazards?", options: ["Thermal, Electrical, and Mechanical", "Input, Output, and Processing", "Structural, Data, and Control", "Fetch, Decode, and Execute"], answer: "Structural, Data, and Control" },
+    { question: "What specifically causes a 'Structural Hazard' in a pipelined processor?", options: ["A missing semicolon in the code", "A resource conflict where two or more instructions need to use the exact same hardware resource at the same time", "The clock speed being set too low", "A branch instruction predicting the wrong path"], answer: "A resource conflict where two or more instructions need to use the exact same hardware resource at the same time" },
+    { question: "What is a common real-world example of a Structural Hazard mentioned in the lecture?", options: ["The ALU dividing by zero", "Both the Fetch stage and the Memory Access stage trying to use a single memory port simultaneously", "The CPU running out of registers", "A power surge destroying the flip-flops"], answer: "Both the Fetch stage and the Memory Access stage trying to use a single memory port simultaneously" },
+    { question: "Which resolution for Structural Hazards involves providing separate components, such as separate Instruction and Data caches (Harvard architecture)?", options: ["Pipeline Stalling", "Interleaving", "Resource Duplication", "Branch Prediction"], answer: "Resource Duplication" },
+    { question: "When a processor resolves a hazard by delaying an instruction for one or more clock cycles, what is this action called?", options: ["Bypassing", "Forwarding", "Pipeline Stalling (inserting Bubbles)", "Branching"], answer: "Pipeline Stalling (inserting Bubbles)" },
+    { question: "How does 'Interleaving' (or Time-Multiplexing) help resolve Structural Hazards without adding new hardware?", options: ["By skipping the memory access stage entirely", "By fetching instructions over the internet", "By scheduling resource access in different half-clock cycles (e.g., fetch on the rising edge, memory access on the falling edge)", "By shutting down inactive cores"], answer: "By scheduling resource access in different half-clock cycles (e.g., fetch on the rising edge, memory access on the falling edge)" },
+    { question: "When does a 'Data Hazard' occur in an instruction pipeline?", options: ["When the hard drive runs out of storage", "When an instruction depends on the results of previous instructions that have not yet completed execution", "When the CPU overheats during heavy math", "When two instructions try to access the same memory bus simultaneously"], answer: "When an instruction depends on the results of previous instructions that have not yet completed execution" },
+    { question: "If instruction 1 is 'ADD R1, R2, R3' and instruction 2 is 'SUB R4, R1, R5', why does a Data Hazard occur?", options: ["Because subtraction cannot follow addition", "Because R4 is an invalid register", "Because the SUB instruction needs to read R1 before the ADD instruction has written its result to R1", "Because both instructions are trying to use the ALU at the same time"], answer: "Because the SUB instruction needs to read R1 before the ADD instruction has written its result to R1" },
+    { question: "In data hazard classifications, what does 'RAW' stand for?", options: ["Register Address Warning", "Read After Write (True Dependency)", "Route ALU Write", "Random Access Write"], answer: "Read After Write (True Dependency)" },
+    { question: "In data hazard classifications, what does 'WAW' stand for?", options: ["Wait And Write", "Write After Write (Output Dependency)", "Write Access Window", "Warning Arithmetic Write"], answer: "Write After Write (Output Dependency)" },
+    { question: "In data hazard classifications, what does 'WAR' stand for?", options: ["Write After Read (Anti-dependency)", "Wait After Read", "Warning And Retry", "Write Access Register"], answer: "Write After Read (Anti-dependency)" },
+    { question: "Which resolution technique involves adding hardware pathways to route data directly from the ALU output back to the ALU input for the next instruction, bypassing the register file?", options: ["Pipeline Stalling", "Branch Prediction", "Forwarding (or Bypassing)", "Resource Duplication"], answer: "Forwarding (or Bypassing)" },
+    { question: "How can software (the compiler) proactively resolve Data Hazards without relying on hardware forwarding?", options: ["By deleting the dependent instructions", "By converting all variables to constants", "Through Compiler Scheduling / Instruction Reordering, placing independent instructions between dependent ones", "By lowering the CPU clock speed automatically"], answer: "Through Compiler Scheduling / Instruction Reordering, placing independent instructions between dependent ones" },
+    { question: "What primarily causes a 'Control Hazard' (or Branch Hazard) in a pipeline?", options: ["A lack of available registers", "Dividing by zero", "Branch instructions that change the Program Counter, meaning the pipeline does not know which instruction to fetch next until the condition is evaluated", "An electrical power surge"], answer: "Branch instructions that change the Program Counter, meaning the pipeline does not know which instruction to fetch next until the condition is evaluated" },
+    { question: "What must happen in the pipeline if a conditional branch is taken, but the CPU had already started fetching the next sequential instructions?", options: ["The CPU crashes", "The pipeline must stall or 'flush', converting the incorrectly fetched instructions into NOOPs (No Operations)", "The CPU executes both paths simultaneously", "The OS reboots"], answer: "The pipeline must stall or 'flush', converting the incorrectly fetched instructions into NOOPs (No Operations)" },
+    { question: "Which Control Hazard resolution involves the hardware guessing whether a branch will be taken or not and fetching instructions based on that guess?", options: ["Pipeline Flushing", "Branch Prediction", "Delayed Branch", "Resource Duplication"], answer: "Branch Prediction" },
+    { question: "What is a Branch Target Buffer (BTB)?", options: ["A holding area for printed documents", "A cache memory that holds the target addresses of previously executed branches to speed up fetching", "A register used strictly for addition", "A mechanism to cool the CPU"], answer: "A cache memory that holds the target addresses of previously executed branches to speed up fetching" },
+    { question: "Which software-based resolution for Control Hazards relies on the compiler rearranging the code sequence to execute a useful instruction during the 'branch delay slot'?", options: ["Delayed Branch", "Branch Target Buffers", "Hardware Prediction", "Bypassing"], answer: "Delayed Branch" },
+    { question: "Which resolution technique physically discards incorrectly fetched instructions from the pipeline if a branch prediction is wrong?", options: ["Forwarding", "Pipeline Flushing", "Interleaving", "Time-Multiplexing"], answer: "Pipeline Flushing" },
+    { question: "According to the lecture, what is the primary advantage of pipelining regarding throughput?", options: ["It decreases instruction throughput", "It makes throughput impossible to measure", "Instruction throughput increases", "It locks the throughput to the RAM speed"], answer: "Instruction throughput increases" },
+    { question: "How does increasing the number of pipeline stages impact execution?", options: ["It forces instructions to execute sequentially", "It increases the number of instructions executed simultaneously", "It decreases the clock frequency", "It prevents the use of an ALU"], answer: "It increases the number of instructions executed simultaneously" },
+    { question: "What is an advantage of pipelining regarding processor clock frequencies?", options: ["Pipelined CPUs work at lower frequencies to save power", "Pipelined CPUs work at higher clock frequencies than the RAM", "The clock frequency must exactly match the hard drive", "Clock frequencies are eliminated entirely"], answer: "Pipelined CPUs work at higher clock frequencies than the RAM" },
+    { question: "What is a major architectural disadvantage of implementing pipelining?", options: ["Designing a pipelined processor is highly complex", "It requires vacuum tubes to function", "It prevents the use of cache memory", "It limits the CPU to only 16 registers"], answer: "Designing a pipelined processor is highly complex" },
+    { question: "While pipelining increases overall throughput, what happens to the latency (the time it takes to complete) of a single individual instruction?", options: ["Instruction latency decreases significantly", "Instruction latency remains perfectly identical", "Instruction latency increases in pipelined processors", "Latency is reduced to zero"], answer: "Instruction latency increases in pipelined processors" },
+    { question: "Why is the throughput of a pipelined processor considered difficult to predict?", options: ["Because hardware timers are inaccurate", "Because of the unpredictable occurrence and penalties of structural, data, and control hazards", "Because the clock speed changes randomly", "Because pipelining relies on cloud servers"], answer: "Because of the unpredictable occurrence and penalties of structural, data, and control hazards" },
+    { question: "How does the physical length (number of stages) of a pipeline affect Control Hazards?", options: ["Longer pipelines eliminate branch hazards", "The longer the pipeline, the worse the problem of hazard penalties for branch instructions", "Pipeline length has absolutely no effect on branch instructions", "Longer pipelines automatically predict all branches with 100% accuracy"], answer: "The longer the pipeline, the worse the problem of hazard penalties for branch instructions" },
+    { question: "In the context of the laundry analogy used in the lecture, what does adding a new load of clothes to the washer while the first load is in the dryer represent?", options: ["Resource Duplication", "Pipeline Stalling", "Overlapping execution phases (Pipelining)", "A Structural Hazard"], answer: "Overlapping execution phases (Pipelining)" },
+    { question: "In a pipeline diagram, if an instruction requires an extra cycle in the EX stage due to complex math, what must happen to the instructions immediately behind it?", options: ["They skip the EX stage", "They bypass the delayed instruction", "They must stall (wait), creating a pipeline bubble", "They are permanently deleted"], answer: "They must stall (wait), creating a pipeline bubble" },
+    { question: "If the compiler determines that two instructions have a 'True Dependency' (RAW), which of the following is NOT a valid way to handle it?", options: ["Forwarding the data in hardware", "Reordering the instructions in software", "Stalling the pipeline", "Changing the physical memory address randomly"], answer: "Changing the physical memory address randomly" },
+    { question: "When resolving Control Hazards, what is the 'branch delay slot'?", options: ["The physical pin on the CPU motherboard", "A specific cycle immediately following a branch instruction where the compiler places an independent, useful instruction to avoid stalling", "A type of memory error", "The time it takes to reboot the computer"], answer: "A specific cycle immediately following a branch instruction where the compiler places an independent, useful instruction to avoid stalling" }
+
+        ]
+    };
+
+    // ==========================================
+    // --- Randomize Options on Load ---
+    // ==========================================
+    function shuffleQuizOptions(data) {
+        for (const key in data) {
+            data[key].forEach(questionItem => {
+                const options = questionItem.options;
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+            });
+        }
+    }
+    
+    // Execute shuffle immediately so all questions are randomized
+    shuffleQuizOptions(quizData);
+
+
+    // --- State Variables ---
+    let studentName = "";
+    let currentChapterNum = 0;
+    let currentQuestionIndex = 0;
+    let correctAnswersCount = 0;
+    let isAiEnabled = true;
+
+    // --- Core Logic ---
+    function switchSection(sectionId) {
+        document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    function toggleAI() {
+        isAiEnabled = document.getElementById('ai-toggle').checked;
+    }
+
+    function startApp() {
+        const nameInput = document.getElementById('student-name').value.trim();
+        if (!nameInput) return alert("Please enter your name to proceed.");
+        
+        studentName = nameInput;
+        document.getElementById('display-name').innerText = studentName;
+        renderChapters();
+        switchSection('chapters-section');
+    }
+
+    function renderChapters() {
+        const list = document.getElementById('chapter-list');
+        list.innerHTML = ''; 
+        
+        for (let i = 1; i <= 6; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'chapter-btn';
+            const cName = chapterNames[i] || `Topic ${i}`;
+            
+            if (quizData[i] && quizData[i].length > 0) {
+                btn.innerHTML = `<strong style="color: var(--primary);">${cName}</strong><br> ${quizData[i].length} Questions`;
+                btn.onclick = () => startQuiz(i);
+            } else {
+                btn.innerHTML = `Module ${i}: ${cName} <span style="font-size: 0.8em; color: var(--text-muted); float: right;">Pending Upload</span>`;
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+            }
+            list.appendChild(btn);
+        }
+    }
+
+    function startQuiz(chapterNum) {
+        currentChapterNum = chapterNum;
+        currentQuestionIndex = 0;
+        correctAnswersCount = 0;
+        
+        const cName = chapterNames[chapterNum] || "";
+        document.getElementById('quiz-title').innerText = `Module ${chapterNum}`;
+        document.getElementById('total-q-num').innerText = quizData[chapterNum].length;
+        
+        loadQuestion();
+        switchSection('quiz-section');
+    }
+
+    function loadQuestion() {
+        document.getElementById('ai-response').classList.add('hidden');
+        
+        // Respect AI Toggle State for Hint Button
+        if (isAiEnabled) {
+            document.getElementById('ai-hint-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('ai-hint-btn').classList.add('hidden');
+        }
+        
+        document.getElementById('next-btn').classList.add('hidden');
+        
+        document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+        
+        const progress = (currentQuestionIndex / quizData[currentChapterNum].length) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+        
+        const currentQ = quizData[currentChapterNum][currentQuestionIndex];
+        document.getElementById('question-text').innerText = currentQ.question;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        currentQ.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = option;
+            btn.onclick = (e) => handleAnswer(option, currentQ.answer, e.target);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function handleAnswer(selectedOption, correctOption, clickedBtn) {
+        const allButtons = document.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => btn.classList.add('disabled-btn'));
+
+        if (selectedOption === correctOption) {
+            correctAnswersCount++;
+            clickedBtn.classList.add('btn-correct');
+            setTimeout(() => { proceedToNext(); }, 1500); 
+        } else {
+            clickedBtn.classList.add('btn-wrong');
+            allButtons.forEach(btn => {
+                if (btn.innerText === correctOption) {
+                    btn.classList.add('btn-correct');
+                }
+            });
+
+            // Respect AI Toggle State for Auto-Triggering Explaination
+            if (isAiEnabled) {
+                getAIExplanation(true);
+                document.getElementById('ai-hint-btn').classList.add('hidden');
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+    }
+
+    function proceedToNext() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData[currentChapterNum].length) {
+            loadQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        document.getElementById('progress-bar').style.width = '100%';
+        const total = quizData[currentChapterNum].length;
+        const percentage = Math.round((correctAnswersCount / total) * 100);
+        
+        document.getElementById('raw-score').innerText = `${correctAnswersCount} / ${total}`;
+        document.getElementById('final-score').innerText = `${percentage}%`;
+        
+        silentGoogleSheetSubmit(percentage);
+        
+        setTimeout(() => { switchSection('results-section'); }, 500); 
+    }
+
+async function silentGoogleSheetSubmit(percentage) {
+        if(GOOGLE_SHEET_WEBAPP_URL === "YOUR_WEB_APP_URL_HERE") return;
+        try {
+            // Get the chapter name if it exists
+            const cName = chapterNames[currentChapterNum];
+            // Format it as "Chapter 1: HTML Fundamentals" or just "Chapter 1" if no name exists
+            const chapterData = cName ? `Chapter ${currentChapterNum}: ${cName}` : `Chapter ${currentChapterNum}`;
+
+            const formData = new URLSearchParams();
+            formData.append('name', studentName);
+            formData.append('chapter', chapterData); // <-- Updated this line
+            formData.append('score', `${percentage}%`);
+
+            fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if(response.ok) console.log("Score automatically saved.");
+            }).catch(e => console.error("Network issue during silent save.", e));
+        } catch (error) {
+            console.error("Error triggering submit:", error);
+        }
+    }
+
+    function backToChapters() {
+        switchSection('chapters-section');
+    }
+
+    // --- Live Dual AI Integration (Debug Version) ---
+    async function getAIExplanation(isAutoTrigger = false) {
+        const activeKey = API_KEYS[ACTIVE_AI_PROVIDER];
+        const aiBox = document.getElementById('ai-response');
+        const currentQ = quizData[currentChapterNum][currentQuestionIndex];
+
+        if (!activeKey || activeKey.includes("YOUR_")) {
+            aiBox.classList.remove('hidden');
+            aiBox.innerHTML = `<strong>Configuration Error:</strong> Valid API key not found for ${ACTIVE_AI_PROVIDER.toUpperCase()}.`;
+            return;
+        }
+        
+        aiBox.classList.remove('hidden');
+        aiBox.innerHTML = `<em>${isAutoTrigger ? "Generating explanation..." : "Connecting to " + ACTIVE_AI_PROVIDER.toUpperCase() + "..."}</em>`;
+        
+        const promptText = `You are a Computer Architecture and Design tutor. A student is answering this multiple choice question: "${currentQ.question}". The correct answer is: "${currentQ.answer}". Provide a brief, one-paragraph explanation (max 1-3 sentences) of why this is the correct answer. Focus on explaining the underlying concept clearly. Do not use markdown formatting.`;
+
+        try {
+            let aiText = "";
+
+            if (ACTIVE_AI_PROVIDER === 'gemini') {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${activeKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: { temperature: 0.3 }
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                const data = await response.json();
+                aiText = data.candidates[0].content.parts[0].text;
+
+            } else if (ACTIVE_AI_PROVIDER === 'groq') {
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${activeKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.1-8b-instant", 
+                        messages: [{ "role": "user", "content": promptText }],
+                        temperature: 0.3
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                const data = await response.json();
+                aiText = data.choices[0].message.content;
+            }
+
+            aiBox.innerHTML = `${aiText}`;
+
+        } catch (error) {
+            console.error("Detailed API Error:", error);
+            
+            let diagnosis = "";
+            
+            if (error.message.includes('Failed to fetch')) {
+                diagnosis = "🚨 <strong>CORS / Browser Blocked:</strong> Your browser killed the request because you are running the file directly (file:///). You absolutely <strong>must</strong> use a local server (like the VS Code 'Live Server' extension) or host it online to bypass this security block.";
+            } else if (error.message.includes('HTTP 400')) {
+                diagnosis = "❌ <strong>API Key Invalid:</strong> The API rejected the key. It might be malformed or invalid.";
+            } else if (error.message.includes('HTTP 401') || error.message.includes('HTTP 403')) {
+                diagnosis = "🚫 <strong>Permission Denied:</strong> Your key is valid but lacks permissions, or authentication failed.";
+            } else if (error.message.includes('HTTP 429')) {
+                diagnosis = "⏱️ <strong>Quota Exceeded:</strong> You have hit the rate limit for this free key.";
+            } else {
+                diagnosis = `⚠️ <strong>System Error:</strong> ${error.message}`;
+            }
+
+            aiBox.innerHTML = diagnosis;
+        }
+    }
+    
+    // ==========================================
+    // --- Keyboard Navigation ---
+    // ==========================================
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            
+            // 1. If on the Quiz screen and the "Continue" button is visible
+            const nextBtn = document.getElementById('next-btn');
+            if (nextBtn && !nextBtn.classList.contains('hidden')) {
+                event.preventDefault(); 
+                proceedToNext();
+            }
+
+            // 2. If on the Setup screen and typing in the Name box
+            const setupSection = document.getElementById('setup-section');
+            if (setupSection && !setupSection.classList.contains('hidden')) {
+                if (document.activeElement.id === 'student-name') {
+                    event.preventDefault();
+                    startApp();
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
